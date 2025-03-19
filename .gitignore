@@ -1,0 +1,31 @@
+# System files
+.DS_Store
+Thumbs.db
+*.log
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Build outputs
+dist/
+build/
+out/
+
+# Local development
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local 
