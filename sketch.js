@@ -8,7 +8,7 @@ let gameOver = false;
 let gameWon = false;
 let lives = 3;
 let difficultyLevel = 1;
-let powerUpTypes = ['shield', 'extraLife', 'slowDown'];
+let powerUpTypes = ['shield', 'extraLife'];
 let playerShielded = false;
 let shieldTimer = 0;
 let stars = []; // Array to store star positions
@@ -247,9 +247,6 @@ function draw() {
           // Add extra life safely with error handling
           lives = min(lives + 1, 5); // Max 5 lives
           addFloatingText(playerX, playerY, "+1 LIFE", color(255, 100, 100));
-        } else if (powerUps[i].type === 'slowDown') {
-          speed = max(speed * 0.7, 1); // Slow down, but not below minimum
-          addFloatingText(playerX, playerY, "SLOW TIME", color(150, 255, 150));
         }
       } catch(e) {
         // If any error occurs during power-up application, log it but don't freeze the game
@@ -267,14 +264,14 @@ function draw() {
   }
 
   // Player movement
-  if (keyIsDown(LEFT_ARROW) && playerX > 10) {
+  if ((keyIsDown(LEFT_ARROW) || keyIsDown(65)) && playerX > 10) { // 65 is the keyCode for 'a'
     playerX -= 3 + (score > 30 ? 1 : 0); // Speed up player at higher scores
     // Add engine particles when moving
     if (frameCount % 3 === 0) {
       createEngineParticle(playerX + 5, playerY + 10, 1);
     }
   }
-  if (keyIsDown(RIGHT_ARROW) && playerX < width - 10) {
+  if ((keyIsDown(RIGHT_ARROW) || keyIsDown(68)) && playerX < width - 10) { // 68 is the keyCode for 'd'
     playerX += 3 + (score > 30 ? 1 : 0);
     // Add engine particles when moving
     if (frameCount % 3 === 0) {
@@ -450,12 +447,15 @@ function displayStartScreen() {
   text("NAVIGATE THE ASTEROID FIELD", width/2, height/2 - 10);
   text(`REACH LEVEL ${maxLevel} TO WIN!`, width/2, height/2 + 15);
   
-  // Instructions
+  // Controls - make them more prominent
   let instructY = height/2 + 50;
   textSize(16);
+  fill(255, 255, 0); // Bright yellow for better visibility
+  text("CONTROLS:", width/2, instructY);
+  fill(200);
+  text("←/→ ARROWS or A/D keys to move", width/2, instructY + 25);
   fill(180);
-  text("Use LEFT/RIGHT arrows to move", width/2, instructY);
-  text("Collect power-ups to survive", width/2, instructY + 25);
+  text("Collect power-ups to survive", width/2, instructY + 50);
   
   // Start prompt with blink effect
   if (frameCount % 60 < 40) {
@@ -723,24 +723,6 @@ function drawPowerUp(powerUp) {
     fill(255, 60, 60);
     ellipse(0, 2, 10, 10); // Circle for bottom of heart
     triangle(-5, 2, 0, -5, 5, 2); // Triangle for top of heart
-    
-  } else if (powerUp.type === 'slowDown') {
-    // Slow down power-up (green)
-    // Outer glow
-    for (let i = 3; i > 0; i--) {
-      let alpha = map(i, 3, 0, 50, 150) * pulseAmount;
-      fill(150, 255, 150, alpha);
-      noStroke();
-      rect(-10 + i * 1.5, -10 + i * 1.5, 20 - i * 3, 20 - i * 3, 5);
-    }
-    
-    // Clock symbol
-    fill(60, 220, 60);
-    ellipse(0, 0, 10, 10);
-    stroke(30, 130, 30);
-    strokeWeight(2);
-    line(0, 0, 0, -4);
-    line(0, 0, 3, 0);
   }
   
   pop();
